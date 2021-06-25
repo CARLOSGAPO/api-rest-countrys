@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Country from './country';
 import { useSelector, useDispatch } from 'react-redux';
 
-const StyledcountryList = styled.div`
+const CountryListStyled = styled.div`
     display: grid;
     grid-row-gap: 2.3em;
     /*grid-template-columns: 1fr 1fr 1fr;*/
@@ -12,11 +12,29 @@ const StyledcountryList = styled.div`
     justify-content: center;
 
     padding: 4em 2em;
-`;
-
+`
 function CountryList() {
+    const [inputValue, setInputValue] = useState('')
     const dispatch = useDispatch()
-    const countryList = useSelector((state) => state.countryList)
+    const countryListByName = useSelector((state) => state.countryListByName)
+
+
+    const countryList = useSelector((state) => {
+
+        if ('' !== state.filterByRegion) {
+            return state.countryFilteredByRegion
+        }
+
+        if (countryListByName.length > 0) {
+            return countryListByName
+        }
+        return state.countryList
+
+    })
+
+
+
+
     console.log('el estado de mi app es ', countryList)
     //const [countryList, setCountryList] = useState([])
     useEffect(() => {
@@ -35,25 +53,54 @@ function CountryList() {
             .catch(() => {
                 console.log('Error carnal')
             })
-    }, [])
+    }, [dispatch])
+
+    const filterByName = (e) => {
+        setInputValue(e.target.value)
+        dispatch({
+            type: 'SET_COUNTRY_BY_NAME',
+            payload: e.target.value
+        })
+    }
+
+    const clearInput = () => {
+        dispatch({
+            type: 'SET_COUNTRY_BY_NAME',
+            payload: ''
+        })
+        setInputValue('')
+    }
     return (
-        <StyledcountryList>
+        <CountryListStyled>
+            <input type="text" value={inputValue} onChange={filterByName} />
+            {
+                inputValue &&
+                <button onClick={clearInput}>X</button>
+            }
+            {
+                countryListByName.length === 0 && inputValue &&
+                <p>
+                    <strong>{inputValue}</strong> Not found in countries
+                </p>
+            }
             {
                 countryList.map(({ name, flag, population, capital, region }) => {
-                    return (<Country
-                        key={name}
-                        flag={flag}
-                        name={name}
-                        population={population}
-                        region={region}
-                        capital={capital}
-                    />
+                    return (
+                        <Country
+
+                            flag={flag}
+                            name={name}
+                            key={name}
+                            population={population}
+                            region={region}
+                            capital={capital}
+                        />
                     )
                 })
             }
 
-        </StyledcountryList>
+        </CountryListStyled>
     )
-};
+}
 
 export default CountryList;
