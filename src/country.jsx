@@ -36,23 +36,23 @@ const Styledcountry = styled.div`
     
 `
 
-function Country ({
+function Country({
     flag,
     name,
     population,
     region,
     capital,
 }) {
-    
+
     return (
         <Styledcountry>
-            
-            <img loading="lazy" src={flag} alt=""/>
+
+            <img loading="lazy" src={flag} alt="" />
             <div className="details">
-            <h2> {name} </h2>
-            <p><strong>Population: </strong>{population}</p>
-            <p><strong>Capital: </strong>{capital}</p>
-            <p><strong>Region:  </strong>{region}</p>
+                <h2> {name} </h2>
+                <p><strong>Populations: </strong>{population}</p>
+                <p><strong>Capital: </strong>{capital}</p>
+                <p><strong>Region:  </strong>{region}</p>
             </div>
         </Styledcountry>
     )
